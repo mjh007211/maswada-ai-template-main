@@ -7,3 +7,8 @@ export type Note = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type CreateNoteDTO = {
+  title: string | null;
+  content: string | null;
+};

@@ -1,5 +1,6 @@
-import type { Note } from "@/types";
+import type { CreateNoteDTO, Note } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
+import { useCallback } from "react";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
@@ -7,7 +8,7 @@ const API_BASE_URL =
 export default function useNotesAPI() {
   const { getToken } = useAuth();
 
-  const getAllNotes = async () => {
+  const getAllNotes = useCallback(async () => {
     const token = await getToken();
     if (!token) {
       console.error("Token not found");
@@ -23,7 +24,49 @@ export default function useNotesAPI() {
     const data: { notes: Note[] } = await response.json();
 
     return data.notes;
+  }, [getToken]);
+
+  const createNotes = async (note: CreateNoteDTO) => {
+    const token = await getToken();
+    if (!token) {
+      console.error("Token not found");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/notes`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(note),
+    });
+
+    const data: { note: Note } = await response.json();
+
+    return data.note;
   };
 
-  return { getAllNotes };
+  const getNoteById = useCallback(
+    async (id: string) => {
+      const token = await getToken();
+      if (!token) {
+        console.error("Token not found");
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data: { note: Note } = await response.json();
+
+      return data.note;
+    },
+    [getToken],
+  );
+
+  return { getAllNotes, createNotes, getNoteById };
 }

@@ -5,10 +5,13 @@ import { FileText, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Note } from "@/types";
 import useNotesAPI from "@/hooks/useNotesAPI";
+import { useNavigate } from "react-router-dom";
 
 export function HomePage() {
   const [notes, setNotes] = useState<Note[]>();
-  const { getAllNotes } = useNotesAPI();
+  const { getAllNotes, createNotes } = useNotesAPI();
+  const navigator = useNavigate();
+
   useEffect(() => {
     const fetchNotes = async () => {
       const notes = await getAllNotes();
@@ -17,6 +20,18 @@ export function HomePage() {
 
     fetchNotes();
   }, [getAllNotes]);
+
+  const handleCreateNotes = async () => {
+    const newNote = await createNotes({ title: "New Note", content: "-" });
+    if (newNote) {
+      navigator(`/notes/${newNote.id}`);
+    }
+  };
+
+  const handleNoteNavigation = (noteId: string) => {
+    navigator(`/notes/${noteId}`);
+  };
+
   return (
     <div className="space-y-12">
       <GlassCard className="px-6 py-10 sm:px-10"></GlassCard>
@@ -25,7 +40,7 @@ export function HomePage() {
         <GlassCard className="p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="font-bold text-2xl">My Notes</h2>
-            <Button>
+            <Button className="cursor-pointer" onClick={handleCreateNotes}>
               <Plus /> New Note
             </Button>
           </div>
@@ -37,8 +52,12 @@ export function HomePage() {
             />
             <Input placeholder="Search here..." className="pl-11" />
           </div>
-          {notes?.map((n) => (
-            <GlassCard key={n.id} className="p-4">
+          {notes?.map((note) => (
+            <GlassCard
+              onClick={() => handleNoteNavigation(note.id)}
+              key={note.id}
+              className="p-4 cursor-pointer"
+            >
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-5">
                   <FileText />
