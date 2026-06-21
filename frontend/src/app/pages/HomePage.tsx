@@ -52,6 +52,3 @@ export function HomePage() {
     </div>
   );
 }
-function getUser(): { user: any } {
-  throw new Error("Function not implemented.");
-}
