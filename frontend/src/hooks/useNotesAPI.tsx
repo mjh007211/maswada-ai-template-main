@@ -1,4 +1,4 @@
-import type { CreateNoteDTO, Note } from "@/types";
+import type { CreateNoteDTO, Note, UpdateNoteDTO } from "@/types";
 import { useAuth } from "@clerk/clerk-react";
 import { useCallback } from "react";
 
@@ -68,5 +68,43 @@ export default function useNotesAPI() {
     [getToken],
   );
 
-  return { getAllNotes, createNotes, getNoteById };
+  const updateNotes = async (note: UpdateNoteDTO, id: string) => {
+    const token = await getToken();
+    if (!token) {
+      console.error("Token not found");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(note),
+    });
+
+    const data: { note: Note } = await response.json();
+
+    return data.note;
+  };
+
+  const deleteNotes = async (id: string) => {
+    const token = await getToken();
+    if (!token) {
+      console.error("Token not found");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.ok;
+  };
+
+  return { getAllNotes, createNotes, getNoteById, updateNotes, deleteNotes };
 }

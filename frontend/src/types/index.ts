@@ -12,3 +12,8 @@ export type CreateNoteDTO = {
   title: string | null;
   content: string | null;
 };
+
+export type UpdateNoteDTO = {
+  title: string | null;
+  content: string | null;
+};

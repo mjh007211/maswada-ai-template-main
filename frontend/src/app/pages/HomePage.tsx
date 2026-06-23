@@ -61,7 +61,7 @@ export function HomePage() {
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-5">
                   <FileText />
-                  <h3>New Note</h3>
+                  <h3>{note.title}</h3>
                 </li>
               </ul>
             </GlassCard>
