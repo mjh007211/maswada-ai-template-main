@@ -17,3 +17,10 @@ export type UpdateNoteDTO = {
   title: string | null;
   content: string | null;
 };
+
+export type AutoSaveStatus =
+  | "initial"
+  | "saving"
+  | "saved"
+  | "pending"
+  | "unsaved";
