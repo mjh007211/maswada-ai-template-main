@@ -16,6 +16,7 @@ export default function NoteDetailPage() {
   const [showNote, setShowNote] = useState<Note | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUserEditted, setIsUserEditted] = useState(false);
+
   const handleUpdatedNote = async () => {
     if (!showNote) {
       return;
@@ -29,6 +30,7 @@ export default function NoteDetailPage() {
     setIsUserEditted(false);
     setAutoSaveStatus("saved");
   };
+
   const { autoSavingStatus, setAutoSaveStatus } = useAutoSave({
     isUserEditted,
     showNote,

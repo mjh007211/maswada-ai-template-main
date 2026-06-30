@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { Note } from "@/types";
 import useNotesAPI from "@/hooks/useNotesAPI";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
 export function HomePage() {
   const [notes, setNotes] = useState<Note[]>();
