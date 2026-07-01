@@ -1,4 +1,5 @@
 import { Trash2Icon } from "lucide-react";
+import { FormattedMessage } from "react-intl";
 
 import {
   AlertDialog,
@@ -23,7 +24,7 @@ export function DeleteButton({ handleDelete }: Props) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button className="cursor-pointer" variant="destructive">
-          Delete note
+          <FormattedMessage id="note.delete" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
@@ -31,15 +32,19 @@ export function DeleteButton({ handleDelete }: Props) {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete note?</AlertDialogTitle>
+          <AlertDialogTitle>
+            <FormattedMessage id="note.deleteTitle" />
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this note?
+            <FormattedMessage id="note.deleteConfirm" />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogCancel variant="outline">
+            <FormattedMessage id="note.cancel" />
+          </AlertDialogCancel>
           <AlertDialogAction onClick={handleDelete} variant="destructive">
-            Delete
+            <FormattedMessage id="note.deleteAction" />
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

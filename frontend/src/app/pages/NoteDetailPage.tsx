@@ -11,6 +11,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export default function NoteDetailPage() {
   const [showNote, setShowNote] = useState<Note | null>(null);
@@ -39,6 +40,7 @@ export default function NoteDetailPage() {
   const { getNoteById, updateNotes, deleteNotes } = useNotesAPI();
   const navigator = useNavigate();
   const { id } = useParams();
+  const intl = useIntl();
 
   const handleBack = () => {
     navigator(-1);
@@ -64,7 +66,7 @@ export default function NoteDetailPage() {
     const isDelete = await deleteNotes(showNote.id);
     if (isDelete) {
       navigator("/");
-      toast.success("Note deleted successfully");
+      toast.success(intl.formatMessage({ id: "note.deletedSuccess" }));
     }
   };
 
@@ -81,7 +83,11 @@ export default function NoteDetailPage() {
   }, [getNoteById, id]);
 
   if (isLoading && !showNote) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <FormattedMessage id="note.loading" />
+      </div>
+    );
   }
 
   return (
@@ -93,7 +99,7 @@ export default function NoteDetailPage() {
             onClick={handleBack}
             variant="outline"
           >
-            <ArrowLeft /> Back to all notes
+            <ArrowLeft /> <FormattedMessage id="note.backToAll" />
           </Button>
           <AutoSaveIndicator autoSavingStatus={autoSavingStatus} />
         </div>
@@ -104,15 +110,15 @@ export default function NoteDetailPage() {
       <div className="flex flex-col gap-4">
         <Input
           value={showNote?.title || ""}
-          className="bg-transparent border-none dark:bg-transparent focus-visible:ring-0"
-          placeholder="Title"
+          className="bg-transparent border-none dark:bg-transparent focus-visible:ring-0 font-bold text-3xl!"
+          placeholder={intl.formatMessage({ id: "note.titlePlaceholder" })}
           onChange={handleTitleChange}
         />
         <Textarea
           value={showNote?.content || ""}
           rows={20}
           className="bg-transparent dark:bg-transparent border-none focus-visible:ring-0 min-h-[400px]"
-          placeholder="Content"
+          placeholder={intl.formatMessage({ id: "note.contentPlaceholder" })}
           onChange={handleContentChange}
         />
       </div>

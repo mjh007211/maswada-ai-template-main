@@ -1,5 +1,6 @@
 import type { AutoSaveStatus } from "@/types";
 import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
+import { FormattedMessage } from "react-intl";
 
 type Props = {
   autoSavingStatus: AutoSaveStatus;
@@ -12,19 +13,23 @@ export default function AutoSaveIndicator({ autoSavingStatus }: Props) {
         <div className="flex items-center gap-2">
           <CircleCheck className="text-green-800" size={20} />
           <span className="flex items-center gap-2 test-sm text-green-800">
-            Saved
+            <FormattedMessage id="autosave.saved" />
           </span>
         </div>
       );
     case "pending":
-      return <span className="test-sm text-zinc-500">Pending...</span>;
+      return (
+        <span className="test-sm text-zinc-500">
+          <FormattedMessage id="autosave.pending" />
+        </span>
+      );
     case "saving":
       return (
         <div className="flex items-center gap-2">
           <LoaderCircle className="text-zinc-500 animate-spin" size={20} />
 
           <span className="flex items-center gap-2 test-sm text-zinc-500">
-            Saving...
+            <FormattedMessage id="autosave.saving" />
           </span>
         </div>
       );
@@ -34,7 +39,7 @@ export default function AutoSaveIndicator({ autoSavingStatus }: Props) {
           <CircleAlert className="text-orange-500" size={20} />
 
           <span className="flex items-center gap-2 test-sm text-orange-500">
-            Unsaved...
+            <FormattedMessage id="autosave.unsaved" />
           </span>
         </div>
       );

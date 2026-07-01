@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import useLang from "@/hooks/useLang";
+import { UserButton } from "@clerk/clerk-react";
 import { FormattedMessage } from "react-intl";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function Header() {
-  const navigator = useNavigate();
   const { toggleLang, isRTL } = useLang();
 
   return (
@@ -19,16 +19,21 @@ export function Header() {
               <FormattedMessage id="title" />
             </Link>
             <p className="text-sm text-gray-300">
-              Your Smart Note-Taking Companion
+              <FormattedMessage id="header.subtitle" />
             </p>
           </div>
-          <Button
-            className="cursor-pointer"
-            onClick={toggleLang}
-            variant="outline"
-          >
-            {isRTL ? "English" : "العربية"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="cursor-pointer"
+              onClick={toggleLang}
+              variant="outline"
+            >
+              <FormattedMessage
+                id={isRTL ? "header.switchToEnglish" : "header.switchToArabic"}
+              />
+            </Button>
+            <UserButton />
+          </div>
         </div>
       </div>
     </header>

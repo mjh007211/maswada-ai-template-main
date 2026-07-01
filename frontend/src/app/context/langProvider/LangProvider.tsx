@@ -7,7 +7,9 @@ type Props = {
 };
 
 export default function LangProvider({ children }: Props) {
-  const [local, setLocal] = useState<Local>(defaultLang);
+  const [local, setLocal] = useState<Local>(
+    () => (localStorage.getItem("local") as Local) || defaultLang,
+  );
 
   const isRTL = local === "ar";
 
@@ -18,6 +20,8 @@ export default function LangProvider({ children }: Props) {
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltl";
     document.documentElement.lang = local;
+
+    localStorage.setItem("local", local);
   }, [local, isRTL]);
   return (
     <LangContext.Provider value={{ local, isRTL, setLocal, toggleLang }}>

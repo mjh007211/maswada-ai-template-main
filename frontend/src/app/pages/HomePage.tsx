@@ -2,16 +2,18 @@ import { GlassCard } from "@/components/common/GlassCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FileText, Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Note } from "@/types";
 import useNotesAPI from "@/hooks/useNotesAPI";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
+import { FormattedMessage, useIntl } from "react-intl";
 
 export function HomePage() {
   const [notes, setNotes] = useState<Note[]>();
+  const [searchQuery, setSearchQuery] = useState("");
   const { getAllNotes, createNotes } = useNotesAPI();
   const navigator = useNavigate();
+  const intl = useIntl();
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -23,7 +25,10 @@ export function HomePage() {
   }, [getAllNotes]);
 
   const handleCreateNotes = async () => {
-    const newNote = await createNotes({ title: "New Note", content: "-" });
+    const newNote = await createNotes({
+      title: intl.formatMessage({ id: "home.defaultNoteTitle" }),
+      content: "-",
+    });
     if (newNote) {
       navigator(`/notes/${newNote.id}`);
     }
@@ -33,6 +38,19 @@ export function HomePage() {
     navigator(`/notes/${noteId}`);
   };
 
+  const getFilterNotes = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return notes;
+    }
+
+    const query = searchQuery.toLocaleLowerCase();
+
+    const filterNotes = notes?.filter((note) =>
+      note.title.toLocaleLowerCase().includes(query),
+    );
+    return filterNotes;
+  }, [notes, searchQuery]);
+
   return (
     <div className="space-y-12">
       <GlassCard className="px-6 py-10 sm:px-10"></GlassCard>
@@ -40,9 +58,11 @@ export function HomePage() {
       <section className="grid gap-6 lg:grid-cols-2">
         <GlassCard className="p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-bold text-2xl">My Notes</h2>
+            <h2 className="font-bold text-2xl">
+              <FormattedMessage id="home.myNotes" />
+            </h2>
             <Button className="cursor-pointer" onClick={handleCreateNotes}>
-              <Plus /> New Note
+              <Plus /> <FormattedMessage id="home.newNote" />
             </Button>
           </div>
           <div className="relative">
@@ -51,9 +71,14 @@ export function HomePage() {
               color="gray"
               className="absolute top-2.5 left-3.5 "
             />
-            <Input placeholder="Search here..." className="pl-11" />
+            <Input
+              placeholder={intl.formatMessage({ id: "home.searchPlaceholder" })}
+              className="pl-11"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+            />
           </div>
-          {notes?.map((note) => (
+          {getFilterNotes?.map((note) => (
             <GlassCard
               onClick={() => handleNoteNavigation(note.id)}
               key={note.id}
